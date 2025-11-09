@@ -1,50 +1,18 @@
-<!DOCTYPE html><meta charset="utf-8" />
-<title>Menú</title>
-<style>
-  body {
-    font: 20px/1.5 system-ui, Arial;
-    margin: 0;
-    background: #0e0e0e;
-    color: #eee;
-  }
-  .wrap {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 16px;
-  }
-  .hdr {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .card {
-    background: #1b1b1b;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px #0007;
-    margin-bottom: 16px;
-  }
-  .pill {
-    background: #2a2a2a;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font: 12px monospace;
-    color: #bbb;
-  }
-  button {
-    background: #2f8bfd;
-    border: 0;
-    color: #fff;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font: 14px;
-    cursor: pointer;
-  }
-</style>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Menú</title>
+  <link rel="stylesheet" href="assets/css/theme.css">
+</head>
+<body>
 <div class="wrap">
   <div class="hdr">
-    <div id="usuario">Cargando…</div>
+    <div class="hdr-left">
+      <img src="assets/images/logo-dekma.png" alt="logo" class="logo" onerror="this.style.display='none'">
+      <div id="usuario">Cargando…</div>
+    </div>
     <div>
       <span id="tipo" class="pill"></span>
       <button onclick="location.href='/auth.html'">Volver</button>
@@ -61,6 +29,8 @@
     </ul>
   </div>
 </div>
+</body>
+</html>
 
 <script>
   const qp = new URLSearchParams(location.search);
