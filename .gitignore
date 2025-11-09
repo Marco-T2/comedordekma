@@ -16,8 +16,9 @@ Homestead.json
 /bootstrap/cache/
 /public/storage
 
-# Node
 /node_modules/
+# Node (ignore node_modules anywhere)
+node_modules/
 /npm-debug.log*
 /yarn-debug.log*
 /yarn-error.log*
