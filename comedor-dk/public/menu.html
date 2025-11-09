@@ -1,0 +1,75 @@
+<!DOCTYPE html><meta charset="utf-8" />
+<title>Menú</title>
+<style>
+  body {
+    font: 20px/1.5 system-ui, Arial;
+    margin: 0;
+    background: #0e0e0e;
+    color: #eee;
+  }
+  .wrap {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 16px;
+  }
+  .hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: #1b1b1b;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px #0007;
+    margin-bottom: 16px;
+  }
+  .pill {
+    background: #2a2a2a;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font: 12px monospace;
+    color: #bbb;
+  }
+  button {
+    background: #2f8bfd;
+    border: 0;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font: 14px;
+    cursor: pointer;
+  }
+</style>
+<div class="wrap">
+  <div class="hdr">
+    <div id="usuario">Cargando…</div>
+    <div>
+      <span id="tipo" class="pill"></span>
+      <button onclick="location.href='/auth.html'">Volver</button>
+    </div>
+  </div>
+
+  <!-- Ejemplo de menú del comedor -->
+  <div class="card">
+    <h3>Menú del día</h3>
+    <ul id="menu">
+      <li>Sopa de maní</li>
+      <li>Segundo: Pique macho</li>
+      <li>Bebida: Refresco de linaza</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const qp = new URLSearchParams(location.search);
+  const nombre = qp.get("nombre") || "Comensal";
+  const card = qp.get("card") || "";
+  const tipo = qp.get("tipo") || "normal";
+  document.getElementById("usuario").textContent = `👤 ${nombre} (${card})`;
+  document.getElementById("tipo").textContent = tipo;
+
+  // opcional: volver automático a auth después de 15s
+  setTimeout(() => (location.href = "/auth.html"), 15000);
+</script>

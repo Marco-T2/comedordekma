@@ -1,0 +1,47 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# PHP / Composer
+/vendor/
+/.phpunit.result.cache
+/.php_cs.cache
+/composer.lock
+
+# Laravel
+.env
+Homestead.yaml
+Homestead.json
+/storage/
+/bootstrap/cache/
+/public/storage
+
+# Node
+/node_modules/
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+/dist/
+
+# Python venv
+.venv/
+env/
+venv/
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Database
+database/database.sqlite
+
+# Logs
+*.log
+
+# Build
+build/
+
+# Misc
+coverage/
+*.cache
