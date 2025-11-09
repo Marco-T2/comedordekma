@@ -1,48 +1,5 @@
-# OS
-.DS_Store
-Thumbs.db
-
-# PHP / Composer
-/vendor/
-/.phpunit.result.cache
-/.php_cs.cache
-/composer.lock
-
-# Laravel
-.env
-Homestead.yaml
-Homestead.json
-/storage/
-/bootstrap/cache/
-/public/storage
-
-/node_modules/
-# Node (ignore node_modules anywhere)
-node_modules/
-/npm-debug.log*
-/yarn-debug.log*
-/yarn-error.log*
-/dist/
-
-# Python venv
-.venv/
-env/
-venv/
-
-# IDEs
-.vscode/
-.idea/
-*.sublime-workspace
-
-# Database
-database/database.sqlite
-
-# Logs
-*.log
-
-# Build
-build/
-
-# Misc
-coverage/
-*.cache
+# No ignores: repository is configured to include all files per user request.
+# NOTE: This intentionally leaves the repo without ignores. Be aware this will
+# include node_modules, vendor, .env and other local files which can be large
+# and may contain sensitive data. If you want to ignore specific files later,
+# edit this file accordingly.
