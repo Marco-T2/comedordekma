@@ -1,0 +1,39 @@
+<!DOCTYPE html><meta charset="utf-8" />
+<h3 id="log">Esperando…</h3>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+  // Socket: intenta conectar al host actual en el puerto 3000; si la página
+  // no está sirviéndose desde un host accesible, usa 127.0.0.1 como fallback.
+  // Si ves esto desde otra PC, reemplaza 127.0.0.1 por la IP del servidor Node.
+  const _host = location.hostname ? `http://${location.hostname}:3000` : 'http://127.0.0.1:3000';
+  const socket = io(_host);
+
+  const log = (txt) => (document.getElementById("log").textContent = txt);
+
+  // Compatibilidad con el evento viejo:
+  socket.on("rfid-scan", (e) => {
+    const ok = e?.result?.ok;
+    const idTxt = e.code ?? e.cardId ?? "";
+    log(
+      ok
+        ? `Hola ${e.result?.nombre ?? ""} (${idTxt})`
+        : `Denegado: ${e.result?.msg || "no válido"}`
+    );
+    console.log("rfid-scan:", e);
+  });
+
+  // Evento unificado nuevo:
+  socket.on("access-event", (e) => {
+    const ok = e?.result?.ok;
+    const idTxt = e.code ?? e.cardId ?? "";
+    const origen = e.type === "finger" ? "huella" : "rfid";
+    log(
+      ok
+        ? `(${origen}) Hola ${e.result?.nombre ?? ""} (${idTxt})`
+        : `(${origen}) Denegado: ${e.result?.msg || "no válido"}`
+    );
+    console.log("access-event:", e);
+  });
+
+  socket.on("joined", (info) => console.log("joined:", info));
+</script>
