@@ -21,15 +21,13 @@ if %ERRORLEVEL% NEQ 0 (
 	echo Algunas ventanas con 'Comedor' siguen activas.
 )
 
-REM --- Fallback: si aún hay procesos relevantes, terminarlos por nombre (ADVERTENCIA)
-echo Si quedan procesos node/php/python, se intentará cerrarlos (esto puede afectar otras instancias).
-tasklist | findstr /I "node.exe php.exe python.exe" >nul
-if %ERRORLEVEL%==0 (
-	echo Ejecutando fallback: taskkill /IM node.exe/php.exe/python.exe /F
-	taskkill /IM node.exe /F 2>nul
-	taskkill /IM php.exe /F 2>nul
-	taskkill /IM python.exe /F 2>nul
-)
+REM --- Fallback seguro: cerrar solo procesos node/php/python iniciados desde este repo
+echo Buscando procesos node/php/python cuyo comando contenga la ruta del repo (%~dp0)...
+
+REM Ejecutar un comando PowerShell que encuentre procesos por nombre y cuyo CommandLine contenga el path del repo
+powershell -NoProfile -Command "Try { $repo = '%~dp0'; $candidates = Get-CimInstance Win32_Process | Where-Object { @('node.exe','php.exe','python.exe') -contains $_.Name -and $_.CommandLine -and $_.CommandLine -like ('*' + $repo + '*') }; if ($candidates) { $candidates | ForEach-Object { Write-Output ('Cerrando proceso {0} ({1})' -f $_.ProcessId, $_.Name); try { Stop-Process -Id $_.ProcessId -Force } catch { Write-Output ('No se pudo cerrar {0}' -f $_.ProcessId) } } } else { Write-Output 'No se encontraron procesos relevantes iniciados desde este repo.' } } Catch { Write-Output 'Fallback seguro: error al enumerar procesos.' }"
+
+REM Nota: este fallback es más seguro — solo cierra procesos cuya línea de comando contiene la ruta del repositorio.
 
 echo Hecho.
 exit /b 0
