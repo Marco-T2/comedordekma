@@ -18,8 +18,21 @@ REM    la línea de comando del proceso. Actualmente se cierra por título.
 REM ==============================================================
 
 REM Cierra por título de ventana (las ventanas se crean con start "Comedor-..." )
-taskkill /FI "WINDOWTITLE eq Comedor-Agente"  /T /F
-taskkill /FI "WINDOWTITLE eq Comedor-Node"    /T /F
-taskkill /FI "WINDOWTITLE eq Comedor-Laravel" /T /F
+echo Cerrando consolas con títulos exactos: Comedor-Agente, Comedor-Node, Comedor-Laravel
+
+REM Usar PowerShell para cerrar únicamente procesos cuya MainWindowTitle sea EXACTAMENTE
+REM uno de los títulos que creamos — esto evita afectar a otras aplicaciones (ej. Visual Studio Code).
+powershell -NoProfile -Command "Try {
+	$titles = @('Comedor-Agente','Comedor-Node','Comedor-Laravel');
+	foreach ($t in $titles) {
+		$procs = Get-Process | Where-Object { $_.MainWindowTitle -and $_.MainWindowTitle -eq $t };
+		foreach ($p in $procs) {
+			Write-Output ("Cerrando ventana: {0} (PID {1})" -f $p.MainWindowTitle, $p.Id);
+			try { $p.CloseMainWindow() | Out-Null; Start-Sleep -Milliseconds 300; if (-not $p.HasExited) { $p.Kill() } } catch { Write-Output ('No se pudo cerrar proceso {0}' -f $p.Id) }
+		}
+	}
+} Catch { Write-Output 'Error al intentar cerrar ventanas via PowerShell.' }"
+
+REM Nota: esto no cierra Visual Studio Code -- Code.exe no tendrá MainWindowTitle igual a los títulos exactos usados.
 
 exit /b 0
