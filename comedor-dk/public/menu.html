@@ -126,43 +126,189 @@
         color: #666;
       }
       /* confirm modal */
-      .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:1200}
-      .confirm-box{background:#fff;border-radius:10px;padding:22px;max-width:900px;width:92%;box-shadow:0 18px 60px rgba(0,0,0,0.35);display:flex;gap:24px;align-items:flex-start}
-      .confirm-left{flex:1}
-      .receipt{border:1px solid #e6e6e6;padding:16px;border-radius:8px;background:#fff}
-      .receipt h3{margin:0 0 8px;font-size:20px}
-      .receipt .code{font-weight:900;font-size:20px;margin-bottom:8px}
-      .receipt ul{margin:8px 0 12px 18px}
-      .receipt .auth{margin-top:10px;font-weight:700}
-      .confirm-right{width:220px;display:flex;flex-direction:column;align-items:center;gap:18px}
-      .confirm-actions{display:flex;gap:12px;justify-content:center;margin-top:12px}
-      .printer-ico{width:120px;height:120px;border-radius:10px;border:1px dashed #eee;display:flex;align-items:center;justify-content:center}
+      .confirm-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1200;
+      }
+      .confirm-box {
+        background: #fff;
+        border-radius: 10px;
+        padding: 22px;
+         max-width: 1100px;
+        width: 92%;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+      }
+      .confirm-left {
+        flex: 1;
+      }
+      .receipt {
+        border: 1px solid #e6e6e6;
+        padding: 16px;
+        border-radius: 8px;
+        background: #fff;
+      }
+      .receipt h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+      }
+      .receipt .code {
+        font-weight: 900;
+        font-size: 20px;
+        margin-bottom: 8px;
+      }
+      .receipt ul {
+        margin: 8px 0 12px 18px;
+      }
+      .receipt .auth {
+        margin-top: 10px;
+        font-weight: 700;
+      }
+      .confirm-right {
+        width: 220px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      .confirm-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 12px;
+      }
+      .printer-ico {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        border: 1px dashed #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
       /* TICKET styles (printer-like) */
-      .ticket-wrap{display:flex;gap:12px;align-items:center;margin-top:12px}
-      .ticket{width:360px; /* ~80mm */
-        border:3px solid #111; border-radius:6px;
+      .ticket-wrap {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 12px;
+      }
+      .ticket {
+         width: 460px; /* wider (~100mm) */
+        border: 3px solid #111;
+        border-radius: 6px;
         font: 16px/1.25 "Inter", system-ui, Arial;
-        color:#111; background:#fff; position:relative}
-      .t-row{display:flex; align-items:stretch}
-      .t-col{padding:10px 12px}
-      .t-b{border-bottom:3px solid #111}
-      .t-r{border-right:3px solid #111}
-      .t-l{border-left:3px solid #111}
-      .t-code{flex:1; font-weight:800; font-size:28px; letter-spacing:1px}
-      .t-type{width:150px; font-weight:800; font-size:22px; display:flex; align-items:center; justify-content:center}
-      .t-checks{width:120px; font-size:13px; padding-left:10px}
-      .chk{display:flex; align-items:center; gap:8px; margin:6px 0}
-      .box{width:18px;height:18px;border:2px solid #111;display:inline-block}
-      .box.on{background:#111}
-      .lab{width:48px}
-      .t-items{min-height:140px}
-      .t-items ul{margin:0 0 0 20px; padding:0}
-      .t-items li{margin:8px 0}
-      .t-auth{font-weight:800; font-size:18px}
-      .btn-print{padding:8px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer}
-      .btn-print:hover{filter:brightness(.96)}
-      @media print{ body{background:#fff} .btn-print{display:none} .ticket{width:78mm; border-width:2px; font-size:14px} .t-code{font-size:22px} .t-type{font-size:18px} }
+        color: #111;
+        background: #fff;
+        position: relative;
+      }
+      .t-row {
+        display: flex;
+        align-items: stretch;
+      }
+      .t-col {
+        padding: 10px 12px;
+      }
+      .t-b {
+        border-bottom: 3px solid #111;
+      }
+      .t-r {
+        border-right: 3px solid #111;
+      }
+      .t-l {
+        border-left: 3px solid #111;
+      }
+      .t-code {
+        flex: 1;
+        font-weight: 800;
+        font-size: 28px;
+        letter-spacing: 1px;
+      }
+      .t-type {
+        width: 150px;
+        font-weight: 800;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .t-checks {
+        width: 120px;
+        font-size: 13px;
+        padding-left: 10px;
+      }
+      .chk {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 6px 0;
+      }
+      .box {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #111;
+        display: inline-block;
+      }
+      .box.on {
+        background: #111;
+      }
+      .lab {
+        width: 48px;
+      }
+      .t-items {
+        min-height: 140px;
+      }
+      .t-items ul {
+        margin: 0 0 0 20px;
+        padding: 0;
+      }
+      .t-items li {
+        margin: 8px 0;
+      }
+      .t-auth {
+        font-weight: 800;
+        font-size: 18px;
+      }
+      .btn-print {
+       padding: 12px 18px;
+       border: 1px solid #ff6b65;
+       border-radius: 10px;
+       cursor: pointer;
+       background: #ff6b65;
+       color: #fff;
+       font-weight: 800;
+       box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      }
+      .btn-print:hover {
+        filter: brightness(0.96);
+      }
+        @media print {
+        body {
+          background: #fff;
+        }
+        .btn-print {
+          display: none;
+        }
+        .ticket {
+          width: 78mm;
+          border-width: 2px;
+          font-size: 14px;
+        }
+        .t-code {
+          font-size: 22px;
+        }
+        .t-type {
+          font-size: 18px;
+        }
+      }
       @media (max-width: 900px) {
         .container {
           padding: 12px;
@@ -353,16 +499,24 @@
               const combined = `${card}${nombre}`; // codigo + nombre todo junto
               // generar ID: PEDDDMMAA-XX
               const d = new Date();
-              const dd = String(d.getDate()).padStart(2,'0');
-              const mm = String(d.getMonth()+1).padStart(2,'0');
+              const dd = String(d.getDate()).padStart(2, "0");
+              const mm = String(d.getMonth() + 1).padStart(2, "0");
               const yy = String(d.getFullYear()).slice(-2);
-              const dateKey = dd+mm+yy;
-              const storeKey = 'ped-'+dateKey;
-              const last = parseInt(localStorage.getItem(storeKey)||'0',10) + 1;
+              const dateKey = dd + mm + yy;
+              const storeKey = "ped-" + dateKey;
+              const last =
+                parseInt(localStorage.getItem(storeKey) || "0", 10) + 1;
               localStorage.setItem(storeKey, String(last));
-              const seq = String(last).padStart(2,'0');
+              const seq = String(last).padStart(2, "0");
               const pedidoCode = `PED${dateKey}-${seq}`;
-              showConfirm({ pedidoCode, tipo: current.tipo_menu, items, combined, nombre, card });
+              showConfirm({
+                pedidoCode,
+                tipo: current.tipo_menu,
+                items,
+                combined,
+                nombre,
+                card,
+              });
             });
           document
             .getElementById("btnCancelar")
@@ -375,84 +529,115 @@
         renderTabs();
         await renderPanel();
       })();
-  
-      // Confirmation modal (ticket style)
-    function showConfirm({pedidoCode, tipo, items, combined, nombre, card}){
-      // remove existing
-      const existing = document.getElementById('confirm-overlay'); if(existing) existing.remove();
-      const overlay = document.createElement('div'); overlay.id='confirm-overlay'; overlay.className='confirm-overlay';
-      const box = document.createElement('div'); box.className='confirm-box';
-      const left = document.createElement('div'); left.className='confirm-left';
-      const right = document.createElement('div'); right.className='confirm-right';
 
-      // ticket wrapper + print button
-      left.innerHTML = `
+      // Confirmation modal (ticket style)
+      function showConfirm({
+        pedidoCode,
+        tipo,
+        items,
+        combined,
+        nombre,
+        card,
+      }) {
+        // remove existing
+        const existing = document.getElementById("confirm-overlay");
+        if (existing) existing.remove();
+        const overlay = document.createElement("div");
+        overlay.id = "confirm-overlay";
+        overlay.className = "confirm-overlay";
+        const box = document.createElement("div");
+        box.className = "confirm-box";
+        const left = document.createElement("div");
+        left.className = "confirm-left";
+        const right = document.createElement("div");
+        right.className = "confirm-right";
+
+        // ticket wrapper + print button
+        left.innerHTML = `
         <div class="ticket-wrap">
           <button class="btn-print" id="btnPrintTicket">Imprimir</button>
           <div id="ticket" class="ticket" aria-label="Comprobante de menú"></div>
         </div>`;
 
-      right.innerHTML = `<div class="printer-ico">🖨️</div>
+        right.innerHTML = `<div class="printer-ico">🖨️</div>
         <div style="font-size:14px;color:#666">Imprimir comprobante</div>
         <div class="confirm-actions">
           <button class="btn secondary" id="btnCloseConfirm">CANCELAR</button>
         </div>`;
 
-      box.appendChild(left); box.appendChild(right); overlay.appendChild(box); document.body.appendChild(overlay);
+        box.appendChild(left);
+        box.appendChild(right);
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
 
-      // render ticket inside #ticket
-      const ticketElem = document.getElementById('ticket');
-      const ticketData = {
-        ped: pedidoCode,
-        tipo: (tipo||'').toUpperCase(),
-        items: items || [],
-        auth: { code: card, nombre: nombre },
-        tabs: buildTabsObject(tipo)
-      };
-      renderTicket(ticketElem, ticketData);
+        // render ticket inside #ticket
+        const ticketElem = document.getElementById("ticket");
+        const ticketData = {
+          ped: pedidoCode,
+          tipo: (tipo || "").toUpperCase(),
+          items: items || [],
+          auth: { code: card, nombre: nombre },
+          tabs: buildTabsObject(tipo),
+        };
+        renderTicket(ticketElem, ticketData);
 
-      // handlers
-      document.getElementById('btnCloseConfirm').addEventListener('click', ()=>{
-        overlay.remove();
-      });
-      document.getElementById('btnPrintTicket').addEventListener('click', ()=>{
-        // prefer to print only the ticket area; window.print will use @media print rules
-        window.print();
-      });
-    }
+        // handlers
+        document
+          .getElementById("btnCloseConfirm")
+          .addEventListener("click", () => {
+            overlay.remove();
+          });
+        document
+          .getElementById("btnPrintTicket")
+          .addEventListener("click", () => {
+            // prefer to print only the ticket area; window.print will use @media print rules
+            window.print();
+          });
+      }
 
-    // build simple tabs object for checks (mark the matching tipo)
-    function buildTabsObject(tipo){
-      const map = { DES: 'Desayuno', ALM: 'Almuerzo', ESP: 'Almuerzo-Especial', TE: 'Te', CEN: 'Cena', TRAS: 'Trasnoche' };
-      const res = { DES:0, ALM:0, ESP:0, TE:0, CEN:0, TRAS:0 };
-      if(!tipo) return res;
-      // find key whose value matches tipo (loose)
-      for(const k in map){ if(map[k].toLowerCase()===tipo.toLowerCase()) res[k]=1 }
-      return res;
-    }
+      // build simple tabs object for checks (mark the matching tipo)
+      function buildTabsObject(tipo) {
+        const map = {
+          DES: "Desayuno",
+          ALM: "Almuerzo",
+          ESP: "Almuerzo-Especial",
+          TE: "Te",
+          CEN: "Cena",
+          TRAS: "Trasnoche",
+        };
+        const res = { DES: 0, ALM: 0, ESP: 0, TE: 0, CEN: 0, TRAS: 0 };
+        if (!tipo) return res;
+        // find key whose value matches tipo (loose)
+        for (const k in map) {
+          if (map[k].toLowerCase() === tipo.toLowerCase()) res[k] = 1;
+        }
+        return res;
+      }
 
-    // render ticket function (from provided snippet)
-    function renderTicket(el, data){
-      const chk = (key,label)=>`
-        <div class="chk"><span class="box ${data.tabs[key]? 'on':''}"></span><span class="lab">${label}</span></div>`;
-      el.innerHTML = `
+      // render ticket function (from provided snippet)
+      function renderTicket(el, data) {
+        const chk = (key, label) => `
+        <div class="chk"><span class="box ${
+          data.tabs[key] ? "on" : ""
+        }"></span><span class="lab">${label}</span></div>`;
+        el.innerHTML = `
         <!-- fila superior -->
         <div class="t-row t-b">
           <div class="t-col t-code t-r">${data.ped}</div>
           <div class="t-col t-type t-r">${data.tipo}</div>
           <div class="t-col t-checks">
-            ${chk('DES','DES')}
-            ${chk('ALM','ALM')}
-            ${chk('ESP','ESP')}
-            ${chk('TE','TE')}
-            ${chk('CEN','CEN')}
-            ${chk('TRAS','TRAS')}
+            ${chk("DES", "DES")}
+            ${chk("ALM", "ALM")}
+            ${chk("ESP", "ESP")}
+            ${chk("TE", "TE")}
+            ${chk("CEN", "CEN")}
+            ${chk("TRAS", "TRAS")}
           </div>
         </div>
         <!-- contenido -->
         <div class="t-row t-b">
           <div class="t-col t-items" style="flex:1">
-            <ul>${(data.items||[]).map(x=>`<li>${x}</li>`).join('')}</ul>
+            <ul>${(data.items || []).map((x) => `<li>${x}</li>`).join("")}</ul>
           </div>
         </div>
         <!-- auth -->
@@ -461,7 +646,7 @@
             AUTH: ${data.auth.code} ${data.auth.nombre}
           </div>
         </div>`;
-    }
+      }
     </script>
   </body>
 </html>
