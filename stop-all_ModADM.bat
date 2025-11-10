@@ -1,4 +1,10 @@
-@echo off
+Set-Location -Path 'C:\Users\marco\Desktop\ComedorDekma\agente-rfid'
+
+# (opcional) activar venv si existe:
+if (Test-Path .\.venv\Scripts\Activate.ps1) { . .\.venv\Scripts\Activate.ps1 }
+
+# ejecutar agente (verás logs en la consola)
+python agent.py@echo off
 REM -------------------------------------------------------------
 REM Copia de stop-all.bat renombrada a stop-all_ModADM
 REM Ejecutar SIEMPRE en modo Administrador (Run as Administrator)

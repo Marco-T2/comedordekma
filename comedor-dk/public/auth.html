@@ -54,7 +54,11 @@
         <img src="assets/images/logo-dekma.png" alt="DEKMA" style="height:64px;display:block;object-fit:contain" onerror="this.style.display='none'">
         <h1>COMEDOR</h1>
       </div>
-      <div class="date" id="fecha"></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="date" id="fecha"></div>
+        <!-- Enlace administrativo simplificado -->
+        <a id="adminLink" href="listarCard.html" style="font-size:14px;color:#0b63ff;text-decoration:none;padding:6px 10px;border-radius:8px;border:1px solid #e6e6e6;background:#fff">Administración</a>
+      </div>
     </header>
 
     <main class="content">
@@ -146,8 +150,8 @@
       codeEl.value = (codeEl.value||'') + k;
     }
 
-    // touch button simulates submit
-    document.getElementById('touchBtn').addEventListener('click', submit);
+  // touch button simulates submit
+  document.getElementById('touchBtn').addEventListener('click', submit);
 
     async function submit(){
       const code = document.getElementById('code').value;
@@ -155,30 +159,23 @@
       const name = nameField.value || 'Comensal';
       if(!code) { alert('Ingrese código o pase la tarjeta'); return }
 
-      // If the code is 5 digits (RFC-style), validate via API first
-      const rfcPattern = /^\d{5}$/;
-      if(rfcPattern.test(code)){
-        try{
-          const res = await fetch(`/api/validar/${encodeURIComponent(code)}`);
-          if(res.ok){
-            const data = await res.json();
-            // call receiveCard to show overlay and redirect
-            receiveCard(code, data.nombre || name, 'rfc');
-            return;
-          } else {
-            const body = await res.json().catch(()=>({}));
-            alert(body.msg || 'Código no válido');
-            return;
-          }
-        }catch(err){
-          alert('Error de red al validar el código');
-          return;
-        }
-      }
+      // Treat OK like a card read: send to bridge (/rfid) so server validates and emits
+      try{
+        // show overlay immediately (masking code) with submitted name
+        receiveCard(code, name, 'keypad');
 
-      // Otherwise treat as direct card code and go to menu (legacy behavior)
-      const url = `/menu.html?nombre=${encodeURIComponent(name)}&card=${encodeURIComponent(code)}`;
-      location.href = url;
+        await fetch('/rfid', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, readerId: 'web-keypad', name })
+        });
+
+        // server will emit an access-event (socket) with authoritative result
+        // we already showed a provisional overlay above
+      }catch(err){
+        alert('Error de red al enviar');
+      }
+      return;
     }
 
     // Simulate card read from agent: listen to storage event (optional integration)
@@ -195,19 +192,24 @@
       const overlay = document.getElementById('cardOverlay');
       const nameEl = document.getElementById('overlayName');
       const codeEl = document.getElementById('overlayCode');
-      nameEl.textContent = 'Cargando...';
-      codeEl.textContent = code;
-      if(initialName) nameEl.textContent = initialName;
+  nameEl.textContent = 'Cargando...';
+  // mask code for privacy (show first 3 chars then two asterisks when length>3)
+  function mask(c){ if(!c) return ''; if(c.length<=3) return c; return c.slice(0,3) + '**'; }
+  codeEl.textContent = mask(code);
+  if(initialName) nameEl.textContent = initialName;
       overlay.classList.add('show');
 
-      // Try to fetch user info from backend (assumption: GET /api/cards/{code} returns {ok:true,name:'...'} )
+      // Try to fetch user info from backend using the validar endpoint
+      // which accepts physical card codes or assigned 5-digit codes.
       if(!initialName){
         try{
-          const res = await fetch(`/api/cards/${encodeURIComponent(code)}`);
+          const res = await fetch(`/api/validar/${encodeURIComponent(code)}`);
           if(res.ok){
             const data = await res.json();
-            if(data && data.name) nameEl.textContent = data.name;
-            else nameEl.textContent = 'Comensal';
+            // API returns { ok:true, nombre, card, code_rfc, tipo }
+            nameEl.textContent = data.nombre || data.name || 'Comensal';
+            // update overlay code to show masked version of whichever code we have
+            codeEl.textContent = mask(data.card || data.code || data.code_rfc || code);
           } else {
             nameEl.textContent = 'Comensal';
           }
@@ -225,9 +227,14 @@
   document.getElementById('code').value = code;
   document.getElementById('name').value = nameEl.textContent || '';
 
-  // auto-submit: redirect to menu after showing overlay
+  // auto-redirect: after overlay hides, go to menu with obtained info
   // small delay to allow overlay hide animation to complete
-  setTimeout(() => submit(), 200);
+  setTimeout(() => {
+    const name = document.getElementById('name').value || '';
+    const card = document.getElementById('code').value || code || '';
+    const url = `/menu.html?nombre=${encodeURIComponent(name)}&card=${encodeURIComponent(card)}`;
+    location.href = url;
+  }, 200);
     }
 
     // Expose a helper to simulate a card read from console

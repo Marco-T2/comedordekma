@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Listado de Tarjetas - Comedor</title>
+  <link rel="stylesheet" href="assets/css/theme.css">
+    <style>
+    body{font-family:Inter,system-ui,Arial,Helvetica,sans-serif;padding:24px;background:#fff;color:#111}
+    .wrap{max-width:1000px;margin:0 auto}
+    h1{font-size:28px;margin-bottom:8px}
+    .actions{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+    :root{ --accent: var(--COLOR-2, #f7e6e3); }
+    /* Make action buttons visually similar to keypad keys and use accent */
+    button{
+      padding:12px 18px;
+      border-radius:14px;
+      border:1px solid #f0dede;
+      background:var(--accent);
+      color:#111;
+      cursor:pointer;
+      box-shadow:0 6px 14px rgba(0,0,0,0.04);
+      font-weight:800;
+    }
+    button:hover{
+      filter:brightness(0.96);
+    }
+    button:active{
+      transform:translateY(1px);
+      box-shadow:0 4px 10px rgba(0,0,0,0.06);
+    }
+    button:focus{
+      outline:2px solid #1113;
+      outline-offset:2px;
+    }
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px 12px;border-bottom:1px solid #f0f0f0;text-align:left}
+    .muted{color:#666}
+  .small-btn{padding:10px 12px;border-radius:10px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Tarjetas</h1>
+    <div class="actions">
+      <button id="btnNew">Registrar nuevo</button>
+      <input id="search" placeholder="Buscar nombre..." style="flex:1;padding:8px;border-radius:8px;border:1px solid #ddd" />
+    </div>
+
+    <table id="tbl">
+      <thead>
+  <tr><th>#</th><th>Nombre</th><th>Tipo</th><th>Código (5d)</th><th>Código tarjeta</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <!-- rows -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.getElementById('btnNew').addEventListener('click', ()=> location.href = 'registrarCard.html');
+    const tbody = document.querySelector('#tbl tbody');
+    const search = document.getElementById('search');
+
+    async function load(){
+  tbody.innerHTML = '<tr><td colspan="6" class="muted">Cargando...</td></tr>';
+      try{
+        const res = await fetch('/api/cards');
+        if(!res.ok) throw new Error('Error cargando');
+        const data = await res.json();
+        renderRows(data);
+      }catch(err){
+        tbody.innerHTML = '<tr><td colspan="5" class="muted">Error al cargar</td></tr>';
+      }
+    }
+
+    function renderRows(items){
+      const q = (search.value||'').toLowerCase();
+      const filtered = items.filter(it=>!q || (it.nombre||'').toLowerCase().includes(q));
+      if(filtered.length===0){
+        tbody.innerHTML = '<tr><td colspan="6" class="muted">No hay registros</td></tr>';
+        return;
+      }
+      tbody.innerHTML = '';
+        filtered.forEach((it,idx)=>{
+        const tr = document.createElement('tr');
+        // mask helper: show first 3 then two asterisks if longer
+        const mask = (c)=>{ if(!c) return ''; c = String(c); return c.length>3? (c.slice(0,3)+'**'): c };
+        tr.innerHTML = `<td>${idx+1}</td>
+                        <td>${escapeHtml(it.nombre||'')}</td>
+                        <td>${escapeHtml(it.tipo||'')}</td>
+                        <td>${escapeHtml(mask(it.code||''))}</td>
+                        <td>${escapeHtml(mask(it.code_rfc||''))}</td>
+                        <td>
+                          <button data-id="${it.id}" class="edit small-btn">Editar</button>
+                          <button data-id="${it.id}" class="del small-btn">Eliminar</button>
+                        </td>`;
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.edit').forEach(b=>b.addEventListener('click', e=>{
+        const id = e.currentTarget.getAttribute('data-id');
+        location.href = `registrarCard.html?id=${id}`;
+      }));
+
+      document.querySelectorAll('.del').forEach(b=>b.addEventListener('click', async e=>{
+        const id = e.currentTarget.getAttribute('data-id');
+        if(!confirm('Eliminar registro?')) return;
+        try{
+          const res = await fetch(`/api/cards/${id}`, { method: 'DELETE' });
+          if(!res.ok) throw new Error('delete failed');
+          load();
+        }catch(err){ alert('No se pudo eliminar') }
+      }));
+    }
+
+    search.addEventListener('input', ()=> load());
+
+    function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]) }
+
+    load();
+  </script>
+</body>
+</html>
