@@ -106,8 +106,11 @@
         cursor: pointer;
         box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
       }
-      .btn.primary{
-        background:#ff6b65;color:#fff;border-color:#ff6b65;box-shadow:0 8px 18px rgba(0,0,0,0.08)
+      .btn.primary {
+        background: #ff6b65;
+        color: #fff;
+        border-color: #ff6b65;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
       }
       .btn.secondary {
         background: #fff;
@@ -122,6 +125,18 @@
         background: #fff;
         color: #666;
       }
+      /* confirm modal */
+      .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:1200}
+      .confirm-box{background:#fff;border-radius:10px;padding:22px;max-width:900px;width:92%;box-shadow:0 18px 60px rgba(0,0,0,0.35);display:flex;gap:24px;align-items:flex-start}
+      .confirm-left{flex:1}
+      .receipt{border:1px solid #e6e6e6;padding:16px;border-radius:8px;background:#fff}
+      .receipt h3{margin:0 0 8px;font-size:20px}
+      .receipt .code{font-weight:900;font-size:20px;margin-bottom:8px}
+      .receipt ul{margin:8px 0 12px 18px}
+      .receipt .auth{margin-top:10px;font-weight:700}
+      .confirm-right{width:220px;display:flex;flex-direction:column;align-items:center;gap:18px}
+      .confirm-actions{display:flex;gap:12px;justify-content:center;margin-top:12px}
+      .printer-ico{width:120px;height:120px;border-radius:10px;border:1px dashed #eee;display:flex;align-items:center;justify-content:center}
       @media (max-width: 900px) {
         .container {
           padding: 12px;
@@ -230,9 +245,14 @@
         return mockItems[tipo] || [];
       }
 
-      document.getElementById("fecha").textContent = new Date().toLocaleDateString();
+      document.getElementById("fecha").textContent =
+        new Date().toLocaleDateString();
       // fecha estilo más grande
-      const f = document.getElementById('fecha'); if(f){ f.style.fontSize='25px'; f.style.fontWeight='700'; }
+      const f = document.getElementById("fecha");
+      if (f) {
+        f.style.fontSize = "25px";
+        f.style.fontWeight = "700";
+      }
 
       // populate user from querystring (optional)
       (function populateUser() {
@@ -298,9 +318,25 @@
         </div>`;
           document
             .getElementById("btnAceptar")
-            .addEventListener("click", () => {
-              // placeholder: en el futuro enviar al backend
-              alert("Seleccionado: " + current.tipo_menu);
+            .addEventListener("click", async () => {
+              // generar formulario de confirmación
+              const items = await getItems(current.tipo_menu);
+              const qp = new URLSearchParams(location.search);
+              const nombre = qp.get("nombre") || "Comensal";
+              const card = qp.get("card") || "0003322164";
+              const combined = `${card}${nombre}`; // codigo + nombre todo junto
+              // generar ID: PEDDDMMAA-XX
+              const d = new Date();
+              const dd = String(d.getDate()).padStart(2,'0');
+              const mm = String(d.getMonth()+1).padStart(2,'0');
+              const yy = String(d.getFullYear()).slice(-2);
+              const dateKey = dd+mm+yy;
+              const storeKey = 'ped-'+dateKey;
+              const last = parseInt(localStorage.getItem(storeKey)||'0',10) + 1;
+              localStorage.setItem(storeKey, String(last));
+              const seq = String(last).padStart(2,'0');
+              const pedidoCode = `PED${dateKey}-${seq}`;
+              showConfirm({ pedidoCode, tipo: current.tipo_menu, items, combined, nombre, card });
             });
           document
             .getElementById("btnCancelar")
@@ -313,6 +349,41 @@
         renderTabs();
         await renderPanel();
       })();
+  
+      // Confirmation modal
+      function showConfirm({pedidoCode, tipo, items, combined, nombre, card}){
+        // remove existing
+        const existing = document.getElementById('confirm-overlay'); if(existing) existing.remove();
+        const overlay = document.createElement('div'); overlay.id='confirm-overlay'; overlay.className='confirm-overlay';
+        const box = document.createElement('div'); box.className='confirm-box';
+        const left = document.createElement('div'); left.className='confirm-left';
+        const right = document.createElement('div'); right.className='confirm-right';
+
+        left.innerHTML = `<div class="receipt">
+            <h3>CONFIRMAR PEDIDO</h3>
+            <div class="code">${pedidoCode}</div>
+            <div style="font-weight:700;margin-bottom:6px">${tipo}</div>
+            <div>
+              <ul>${(items||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
+            </div>
+            <div class="auth">COD: ${combined}</div>
+            <div class="auth">AUTH: ${combined}</div>
+          </div>`;
+
+        right.innerHTML = `<div class="printer-ico">🖨️</div>
+          <div class="confirm-actions">
+            <button class="btn primary" id="btnPrintNow">IMPRIMIR</button>
+            <button class="btn secondary" id="btnCloseConfirm">CANCELAR</button>
+          </div>`;
+
+        box.appendChild(left); box.appendChild(right); overlay.appendChild(box); document.body.appendChild(overlay);
+
+        document.getElementById('btnCloseConfirm').addEventListener('click', ()=> location.href='auth.html');
+        document.getElementById('btnPrintNow').addEventListener('click', ()=>{
+          // print the page (user asked imprimir does not navigate)
+          window.print();
+        });
+      }
     </script>
   </body>
 </html>
