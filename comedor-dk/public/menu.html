@@ -137,6 +137,32 @@
       .confirm-right{width:220px;display:flex;flex-direction:column;align-items:center;gap:18px}
       .confirm-actions{display:flex;gap:12px;justify-content:center;margin-top:12px}
       .printer-ico{width:120px;height:120px;border-radius:10px;border:1px dashed #eee;display:flex;align-items:center;justify-content:center}
+
+      /* TICKET styles (printer-like) */
+      .ticket-wrap{display:flex;gap:12px;align-items:center;margin-top:12px}
+      .ticket{width:360px; /* ~80mm */
+        border:3px solid #111; border-radius:6px;
+        font: 16px/1.25 "Inter", system-ui, Arial;
+        color:#111; background:#fff; position:relative}
+      .t-row{display:flex; align-items:stretch}
+      .t-col{padding:10px 12px}
+      .t-b{border-bottom:3px solid #111}
+      .t-r{border-right:3px solid #111}
+      .t-l{border-left:3px solid #111}
+      .t-code{flex:1; font-weight:800; font-size:28px; letter-spacing:1px}
+      .t-type{width:150px; font-weight:800; font-size:22px; display:flex; align-items:center; justify-content:center}
+      .t-checks{width:120px; font-size:13px; padding-left:10px}
+      .chk{display:flex; align-items:center; gap:8px; margin:6px 0}
+      .box{width:18px;height:18px;border:2px solid #111;display:inline-block}
+      .box.on{background:#111}
+      .lab{width:48px}
+      .t-items{min-height:140px}
+      .t-items ul{margin:0 0 0 20px; padding:0}
+      .t-items li{margin:8px 0}
+      .t-auth{font-weight:800; font-size:18px}
+      .btn-print{padding:8px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer}
+      .btn-print:hover{filter:brightness(.96)}
+      @media print{ body{background:#fff} .btn-print{display:none} .ticket{width:78mm; border-width:2px; font-size:14px} .t-code{font-size:22px} .t-type{font-size:18px} }
       @media (max-width: 900px) {
         .container {
           padding: 12px;
@@ -350,40 +376,92 @@
         await renderPanel();
       })();
   
-      // Confirmation modal
-      function showConfirm({pedidoCode, tipo, items, combined, nombre, card}){
-        // remove existing
-        const existing = document.getElementById('confirm-overlay'); if(existing) existing.remove();
-        const overlay = document.createElement('div'); overlay.id='confirm-overlay'; overlay.className='confirm-overlay';
-        const box = document.createElement('div'); box.className='confirm-box';
-        const left = document.createElement('div'); left.className='confirm-left';
-        const right = document.createElement('div'); right.className='confirm-right';
+      // Confirmation modal (ticket style)
+    function showConfirm({pedidoCode, tipo, items, combined, nombre, card}){
+      // remove existing
+      const existing = document.getElementById('confirm-overlay'); if(existing) existing.remove();
+      const overlay = document.createElement('div'); overlay.id='confirm-overlay'; overlay.className='confirm-overlay';
+      const box = document.createElement('div'); box.className='confirm-box';
+      const left = document.createElement('div'); left.className='confirm-left';
+      const right = document.createElement('div'); right.className='confirm-right';
 
-        left.innerHTML = `<div class="receipt">
-            <h3>CONFIRMAR PEDIDO</h3>
-            <div class="code">${pedidoCode}</div>
-            <div style="font-weight:700;margin-bottom:6px">${tipo}</div>
-            <div>
-              <ul>${(items||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
-            </div>
-            <div class="auth">COD: ${combined}</div>
-            <div class="auth">AUTH: ${combined}</div>
-          </div>`;
+      // ticket wrapper + print button
+      left.innerHTML = `
+        <div class="ticket-wrap">
+          <button class="btn-print" id="btnPrintTicket">Imprimir</button>
+          <div id="ticket" class="ticket" aria-label="Comprobante de menú"></div>
+        </div>`;
 
-        right.innerHTML = `<div class="printer-ico">🖨️</div>
-          <div class="confirm-actions">
-            <button class="btn primary" id="btnPrintNow">IMPRIMIR</button>
-            <button class="btn secondary" id="btnCloseConfirm">CANCELAR</button>
-          </div>`;
+      right.innerHTML = `<div class="printer-ico">🖨️</div>
+        <div style="font-size:14px;color:#666">Imprimir comprobante</div>
+        <div class="confirm-actions">
+          <button class="btn secondary" id="btnCloseConfirm">CANCELAR</button>
+        </div>`;
 
-        box.appendChild(left); box.appendChild(right); overlay.appendChild(box); document.body.appendChild(overlay);
+      box.appendChild(left); box.appendChild(right); overlay.appendChild(box); document.body.appendChild(overlay);
 
-        document.getElementById('btnCloseConfirm').addEventListener('click', ()=> location.href='auth.html');
-        document.getElementById('btnPrintNow').addEventListener('click', ()=>{
-          // print the page (user asked imprimir does not navigate)
-          window.print();
-        });
-      }
+      // render ticket inside #ticket
+      const ticketElem = document.getElementById('ticket');
+      const ticketData = {
+        ped: pedidoCode,
+        tipo: (tipo||'').toUpperCase(),
+        items: items || [],
+        auth: { code: card, nombre: nombre },
+        tabs: buildTabsObject(tipo)
+      };
+      renderTicket(ticketElem, ticketData);
+
+      // handlers
+      document.getElementById('btnCloseConfirm').addEventListener('click', ()=>{
+        overlay.remove();
+      });
+      document.getElementById('btnPrintTicket').addEventListener('click', ()=>{
+        // prefer to print only the ticket area; window.print will use @media print rules
+        window.print();
+      });
+    }
+
+    // build simple tabs object for checks (mark the matching tipo)
+    function buildTabsObject(tipo){
+      const map = { DES: 'Desayuno', ALM: 'Almuerzo', ESP: 'Almuerzo-Especial', TE: 'Te', CEN: 'Cena', TRAS: 'Trasnoche' };
+      const res = { DES:0, ALM:0, ESP:0, TE:0, CEN:0, TRAS:0 };
+      if(!tipo) return res;
+      // find key whose value matches tipo (loose)
+      for(const k in map){ if(map[k].toLowerCase()===tipo.toLowerCase()) res[k]=1 }
+      return res;
+    }
+
+    // render ticket function (from provided snippet)
+    function renderTicket(el, data){
+      const chk = (key,label)=>`
+        <div class="chk"><span class="box ${data.tabs[key]? 'on':''}"></span><span class="lab">${label}</span></div>`;
+      el.innerHTML = `
+        <!-- fila superior -->
+        <div class="t-row t-b">
+          <div class="t-col t-code t-r">${data.ped}</div>
+          <div class="t-col t-type t-r">${data.tipo}</div>
+          <div class="t-col t-checks">
+            ${chk('DES','DES')}
+            ${chk('ALM','ALM')}
+            ${chk('ESP','ESP')}
+            ${chk('TE','TE')}
+            ${chk('CEN','CEN')}
+            ${chk('TRAS','TRAS')}
+          </div>
+        </div>
+        <!-- contenido -->
+        <div class="t-row t-b">
+          <div class="t-col t-items" style="flex:1">
+            <ul>${(data.items||[]).map(x=>`<li>${x}</li>`).join('')}</ul>
+          </div>
+        </div>
+        <!-- auth -->
+        <div class="t-row">
+          <div class="t-col t-auth" style="flex:1">
+            AUTH: ${data.auth.code} ${data.auth.nombre}
+          </div>
+        </div>`;
+    }
     </script>
   </body>
 </html>
