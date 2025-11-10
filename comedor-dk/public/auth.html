@@ -149,11 +149,34 @@
     // touch button simulates submit
     document.getElementById('touchBtn').addEventListener('click', submit);
 
-    function submit(){
+    async function submit(){
       const code = document.getElementById('code').value;
-      const name = document.getElementById('name').value || 'Comensal';
+      const nameField = document.getElementById('name');
+      const name = nameField.value || 'Comensal';
       if(!code) { alert('Ingrese código o pase la tarjeta'); return }
-      // navigate to menu (demo)
+
+      // If the code is 5 digits (RFC-style), validate via API first
+      const rfcPattern = /^\d{5}$/;
+      if(rfcPattern.test(code)){
+        try{
+          const res = await fetch(`/api/validar/${encodeURIComponent(code)}`);
+          if(res.ok){
+            const data = await res.json();
+            // call receiveCard to show overlay and redirect
+            receiveCard(code, data.nombre || name, 'rfc');
+            return;
+          } else {
+            const body = await res.json().catch(()=>({}));
+            alert(body.msg || 'Código no válido');
+            return;
+          }
+        }catch(err){
+          alert('Error de red al validar el código');
+          return;
+        }
+      }
+
+      // Otherwise treat as direct card code and go to menu (legacy behavior)
       const url = `/menu.html?nombre=${encodeURIComponent(name)}&card=${encodeURIComponent(code)}`;
       location.href = url;
     }

@@ -16,5 +16,6 @@ class Card extends Model
         'nombre',
         'tipo',
         'activo',
+        'code_rfc',
     ];
 }
