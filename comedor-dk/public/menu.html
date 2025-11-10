@@ -9,8 +9,11 @@
     :root{ --accent: var(--COLOR-2, #f7e6e3); }
   body{font-family:Inter,system-ui,Arial,Helvetica,sans-serif;padding:22px;background:var(--bg,#fff);color:var(--text,#111);font-size:16px}
   .container{max-width:1300px;margin:0 auto;padding:6px 18px}
-  .header{display:flex;align-items:center;justify-content:space-between;gap:18px}
-  .tabs{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 18px; }
+  .header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px}
+  .header-left{display:flex;align-items:center;gap:12px}
+  .header-center{display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .header-right{text-align:right}
+  .tabs{ display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 18px; justify-content:flex-start }
   .tab{ padding:12px 18px; min-width:120px; text-align:center; border:1px solid #f4d8d7; border-bottom:none; border-radius:12px 12px 0 0; background:#fff6f6; cursor:pointer; font-weight:700; color:#333; box-shadow:0 2px 6px rgba(0,0,0,0.03)}
   .tab[aria-selected="true"]{ background:var(--accent,#ff6b65); color:#fff; box-shadow:0 8px 20px rgba(0,0,0,0.06); }
   .panel{ border:1px solid #e6e6e6; border-radius:14px; padding:26px; background:#fff; box-shadow:0 12px 30px rgba(0,0,0,.05); }
@@ -28,11 +31,19 @@
 <body>
   <div class="container">
     <div class="header">
-        <div style="display:flex;align-items:center;gap:12px">
-          <strong>MENU</strong>
-          <div id="usuario" class="user" style="margin-left:12px;font-weight:600;color:#333"></div>
+        <div class="header-left">
+          <div id="usuario" class="user" style="font-weight:700;color:#333;font-size:18px;display:flex;align-items:center;gap:10px">
+            <span id="usuario-icon">👤</span>
+            <span id="usuario-text">Comensal (0003322164)</span>
+          </div>
         </div>
-        <div id="fecha">&nbsp;</div>
+        <div class="header-center">
+          <img src="assets/images/logo-dekma.png" alt="Dekma" style="height:44px" onerror="this.style.display='none'">
+          <strong style="font-size:34px;letter-spacing:2px;margin-top:6px">MENU</strong>
+        </div>
+        <div class="header-right">
+          <div id="fecha">&nbsp;</div>
+        </div>
       </div>
 
     <div id="menuRoot">
@@ -80,11 +91,13 @@
   (function populateUser(){
     try{
       const qp = new URLSearchParams(location.search);
-    const nombre = qp.get("nombre") || "Comensal";
-    const card = qp.get("card") || "0003322164";
+      const nombre = qp.get("nombre") || "Comensal";
+      const card = qp.get("card") || "0003322164";
       const tipo = qp.get("tipo") || "";
-      const u = document.getElementById("usuario");
-      if(u) u.textContent = `👤 ${nombre}${card?` (${card})`:''}${tipo?` – ${tipo}`:''}`;
+      const uText = document.getElementById("usuario-text");
+      const uIcon = document.getElementById("usuario-icon");
+      if(uText) uText.textContent = `${nombre}${card?` (${card})`:''}${tipo?` – ${tipo}`:''}`;
+      if(uIcon) uIcon.textContent = '👤';
     }catch(e){ /* ignore */ }
   })();
 
