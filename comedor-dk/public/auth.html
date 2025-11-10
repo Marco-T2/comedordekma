@@ -14,22 +14,27 @@
     :root{--bg:#ffffff;--text:#111111;--muted:#6b6b6b;--accent:var(--COLOR-2, #f7e6e3)}
   html,body{height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,Helvetica,sans-serif;font-size:20px}
     .auth-wrap{min-height:100vh;display:flex;flex-direction:column}
-    header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px}
+  header{display:flex;justify-content:space-between;align-items:center;padding:8px 24px 18px 24px}
     header .brand{display:flex;flex-direction:column;align-items:center}
-  header .brand h1{margin:6px 0;font-size:48px;letter-spacing:4px}
+  header .brand h1{margin:6px 0;font-size:54px;letter-spacing:4px}
     .content{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
     .grid{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;width:100%;max-width:1100px}
     .left{display:flex;flex-direction:column;align-items:center}
-  .reader-svg{width:280px;height:280px}
+  .reader-svg{width:340px;height:340px;max-width:90%}
     .fields{width:100%;display:flex;gap:16px;justify-content:center;margin-bottom:18px}
     .field{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-  .field label{font-weight:800;color:#444;font-size:16px}
-  .field input{padding:12px 14px;border-radius:8px;border:1px solid #e6e6e6;background:#fff;color:var(--text);width:360px;font-size:18px}
+  .field label{font-weight:800;color:#444;font-size:18px}
+  .field input{padding:16px 18px;border-radius:10px;border:1px solid #e6e6e6;background:#fff;color:var(--text);width:440px;font-size:20px}
     .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:8px}
-  .key{background:#ffffff;border:1px solid #e6e6e6;border-radius:12px;padding:22px;font-size:28px;color:#111;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,0.04)}
-  .key.action{background:var(--accent);color:#111;font-weight:700}
+  .key{background:#ffffff;border:1px solid #e6e6e6;border-radius:14px;padding:26px;font-size:32px;color:#111;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,0.04)}
+  .key.action{background:var(--accent);color:#111;font-weight:800}
     .touch-btn{margin-top:22px;background:var(--accent);border-radius:50%;width:68px;height:68px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.06);cursor:pointer}
-  .date{color:#555;font-weight:700;font-size:18px}
+  /* touch image-only variant */
+  .touch-img{width:96px;height:96px;object-fit:contain;cursor:pointer;background:transparent;border-radius:10px}
+  .date{color:#555;font-weight:800;font-size:20px}
+
+  /* left header label (AUTENTIFICACION) styling */
+  .left-h .muted{font-weight:800;font-size:18px;margin-top:-6px;color:#444}
     /* overlay when card read */
     #cardOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);z-index:60;backdrop-filter:blur(4px);visibility:hidden;opacity:0;transition:opacity .25s ease,visibility .25s}
     #cardOverlay.show{visibility:visible;opacity:1}
@@ -82,10 +87,8 @@
           </div>
 
           <div style="display:flex;justify-content:center">
-            <div class="touch-btn" id="touchBtn" title="Touch / Confirm">
-              <!-- touch icon (SVG) -->
-              <img src="assets/images/IconTouch.png" alt="Touch" style="width:28px;height:28px;object-fit:contain" aria-hidden="true" />
-            </div>
+            <!-- touch as image only -->
+            <img id="touchBtn" class="touch-img" src="assets/images/IconTouch.png" alt="Touch" title="Touch / Confirm" aria-hidden="true" />
           </div>
         </div>
       </div>
@@ -168,15 +171,17 @@
         nameEl.textContent = 'Comensal';
       }
 
-      // wait ~3s to mimic verification
-      await new Promise(r=>setTimeout(r, 3000));
-      overlay.classList.remove('show');
+  // wait ~3s to mimic verification
+  await new Promise(r=>setTimeout(r, 3000));
+  overlay.classList.remove('show');
 
-      // fill fields with obtained info and proceed
-      document.getElementById('code').value = code;
-      document.getElementById('name').value = nameEl.textContent || '';
-      // optional: auto submit after showing (commented out)
-      // submit();
+  // fill fields with obtained info
+  document.getElementById('code').value = code;
+  document.getElementById('name').value = nameEl.textContent || '';
+
+  // auto-submit: redirect to menu after showing overlay
+  // small delay to allow overlay hide animation to complete
+  setTimeout(() => submit(), 200);
     }
 
     // Expose a helper to simulate a card read from console
