@@ -5,7 +5,9 @@
   // Socket: intenta conectar al host actual en el puerto 3000; si la página
   // no está sirviéndose desde un host accesible, usa 127.0.0.1 como fallback.
   // Si ves esto desde otra PC, reemplaza 127.0.0.1 por la IP del servidor Node.
-  const _host = location.hostname ? `http://${location.hostname}:3000` : 'http://127.0.0.1:3000';
+  const _host = location.hostname
+    ? `http://${location.hostname}:3000`
+    : "http://127.0.0.1:3000";
   const socket = io(_host);
 
   const log = (txt) => (document.getElementById("log").textContent = txt);

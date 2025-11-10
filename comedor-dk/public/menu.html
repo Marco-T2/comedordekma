@@ -27,19 +27,21 @@
         align-items: center;
         gap: 18px;
       }
-      .header-left {
+      .header-left,
+      .header-center,
+      .header-right {
         display: flex;
         align-items: center;
-        gap: 12px;
+        justify-content: flex-end; /* asegurar fecha a la derecha */
       }
+      .header-left,
       .header-center {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
       }
-      .header-right {
-        text-align: right;
+      .header-center {
+        flex-direction: column;
+        justify-content: center;
       }
       .tabs {
         display: flex;
@@ -63,7 +65,7 @@
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
       }
       .tab[aria-selected="true"] {
-        background: #ff6b65; /* strong accent */
+        background: #ff6b65;
         color: #fff;
         border-color: #ff6b65;
         box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
@@ -125,29 +127,43 @@
         background: #fff;
         color: #666;
       }
+
       /* confirm modal */
       .confirm-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        display: flex;
-        align-items: center;
-        justify-content: center;
         z-index: 1200;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(2px);
       }
       .confirm-box {
         background: #fff;
-        border-radius: 10px;
-        padding: 22px;
-         max-width: 1100px;
-        width: 92%;
-        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
-        display: flex;
+        border-radius: 14px;
+        padding: 24px;
+        width: min(1000px, 100%);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+        display: grid;
+        grid-template-columns: 1fr 240px;
         gap: 24px;
-        align-items: flex-start;
+        align-items: start;
+        animation: pop 0.16s ease-out;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0.98);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
       }
       .confirm-left {
-        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
       .receipt {
         border: 1px solid #e6e6e6;
@@ -172,11 +188,23 @@
         font-weight: 700;
       }
       .confirm-right {
-        width: 220px;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 18px;
+        justify-content: space-between;
+        min-height: 220px;
+      }
+      .confirm-close {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        border: 0;
+        background: transparent;
+        font-size: 22px;
+        cursor: pointer;
+        line-height: 1;
+        color: #777;
       }
       .confirm-actions {
         display: flex;
@@ -185,30 +213,37 @@
         margin-top: 12px;
       }
       .printer-ico {
-        width: 120px;
-        height: 120px;
-        border-radius: 10px;
+        width: 140px;
+        height: 140px;
+        border-radius: 12px;
         border: 1px dashed #eee;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 56px;
+      }
+      .printer-ico.lg {
+        width: 180px;
+        height: 180px;
+        font-size: 72px;
       }
 
       /* TICKET styles (printer-like) */
       .ticket-wrap {
-        display: flex;
-        gap: 12px;
-        align-items: center;
+        display: block;
         margin-top: 12px;
       }
       .ticket {
-         width: 460px; /* wider (~100mm) */
+        width: 100%;
+        max-width: none;
         border: 3px solid #111;
         border-radius: 6px;
-        font: 16px/1.25 "Inter", system-ui, Arial;
+        /* aumentar tamaño base de fuente para que el PNG tenga texto más legible */
+        font: 24px/1.35 "Inter", system-ui, Arial;
         color: #111;
         background: #fff;
         position: relative;
+        padding: 8px;
       }
       .t-row {
         display: flex;
@@ -228,40 +263,61 @@
       }
       .t-code {
         flex: 1;
-        font-weight: 800;
-        font-size: 28px;
+        font-weight: 900;
+        /* reducir el tamaño del PED en la parte superior */
+        font-size: 40px;
         letter-spacing: 1px;
       }
       .t-type {
-        width: 150px;
-        font-weight: 800;
-        font-size: 22px;
+        width: 180px;
+        font-weight: 900;
+        /* reducir ligeramente el tipo en la parte superior */
+        font-size: 28px;
         display: flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
+      }
+      /* nuevo layout: checks en columna a la derecha, centrados verticalmente */
+      .t-body {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .t-items {
+        flex: 1;
       }
       .t-checks {
-        width: 120px;
-        font-size: 13px;
-        padding-left: 10px;
+        width: 180px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding-left: 8px;
+        align-items: flex-start;
+        justify-content: center;
+        box-sizing: border-box;
+        /* aumentar tamaño de labels de check en la parte inferior */
+        font-size: 24px;
       }
       .chk {
         display: flex;
         align-items: center;
         gap: 8px;
         margin: 6px 0;
+        font-weight: 700;
       }
       .box {
-        width: 18px;
-        height: 18px;
-        border: 2px solid #111;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #111;
         display: inline-block;
       }
       .box.on {
         background: #111;
       }
       .lab {
-        width: 48px;
+        width: 56px;
+        font-weight: 700;
       }
       .t-items {
         min-height: 140px;
@@ -272,47 +328,97 @@
       }
       .t-items li {
         margin: 8px 0;
+        /* aumentar tamaño de items para la parte inferior */
+        font-size: 26px;
       }
       .t-auth {
-        font-weight: 800;
-        font-size: 18px;
+        font-weight: 900;
+        /* auth más grande */
+        font-size: 28px;
+      }
+
+      /* actions column tweaks */
+      .confirm-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
+      .confirm-actions .btn {
+        width: 100%;
       }
       .btn-print {
-       padding: 12px 18px;
-       border: 1px solid #ff6b65;
-       border-radius: 10px;
-       cursor: pointer;
-       background: #ff6b65;
-       color: #fff;
-       font-weight: 800;
-       box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+        width: 100%;
+        padding: 12px 18px;
+        border: 1px solid #ff6b65;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #ff6b65;
+        color: #fff;
+        font-weight: 800;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
       }
       .btn-print:hover {
         filter: brightness(0.96);
       }
-        @media print {
+
+      @media print {
+        @page {
+          size: 80mm auto;
+          margin: 4mm;
+        }
         body {
           background: #fff;
         }
+        * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .container,
+        .header,
+        .confirm-right,
         .btn-print {
-          display: none;
+          display: none !important;
+        }
+        .confirm-overlay {
+          position: static;
+          padding: 0;
+          background: transparent;
+        }
+        .confirm-box {
+          box-shadow: none;
+          padding: 0;
+          width: auto;
+          grid-template-columns: 1fr;
         }
         .ticket {
           width: 78mm;
           border-width: 2px;
-          font-size: 14px;
+          /* mayor tamaño para impresión */
+          font-size: 24px;
+          padding: 8px;
         }
         .t-code {
-          font-size: 22px;
+          font-size: 42px;
         }
         .t-type {
-          font-size: 18px;
+          font-size: 28px;
+        }
+        .t-items li {
+          font-size: 26px;
+        }
+        .t-checks {
+          font-size: 24px;
+        }
+        .confirm-box {
+          grid-template-columns: 1fr;
+        }
+        .confirm-right {
+          width: 100%;
         }
       }
-      @media (max-width: 900px) {
-        .container {
-          padding: 12px;
-        }
+      body.modal-open {
+        overflow: hidden;
       }
       @media (max-width: 720px) {
         .tabs {
@@ -547,6 +653,8 @@
         overlay.className = "confirm-overlay";
         const box = document.createElement("div");
         box.className = "confirm-box";
+        box.innerHTML +=
+          '<button class="confirm-close" aria-label="Cerrar">×</button>';
         const left = document.createElement("div");
         left.className = "confirm-left";
         const right = document.createElement("div");
@@ -555,15 +663,16 @@
         // ticket wrapper + print button
         left.innerHTML = `
         <div class="ticket-wrap">
-          <button class="btn-print" id="btnPrintTicket">Imprimir</button>
           <div id="ticket" class="ticket" aria-label="Comprobante de menú"></div>
         </div>`;
 
-        right.innerHTML = `<div class="printer-ico">🖨️</div>
-        <div style="font-size:14px;color:#666">Imprimir comprobante</div>
-        <div class="confirm-actions">
-          <button class="btn secondary" id="btnCloseConfirm">CANCELAR</button>
-        </div>`;
+        right.innerHTML = `
+          <div class="printer-ico lg" aria-hidden="true">🖨️</div>
+          <button class="btn-print" id="btnPrintTicket">Imprimir</button>
+          <div class="confirm-actions">
+            <button class="btn secondary" id="btnCloseConfirm">CANCELAR</button>
+          </div>
+        `;
 
         box.appendChild(left);
         box.appendChild(right);
@@ -582,17 +691,115 @@
         renderTicket(ticketElem, ticketData);
 
         // handlers
+        function escHandler(ev) {
+          if (ev.key === "Escape") close();
+        }
+        function close() {
+          document.body.classList.remove("modal-open");
+          overlay.remove();
+          document.removeEventListener("keydown", escHandler);
+        }
         document
           .getElementById("btnCloseConfirm")
-          .addEventListener("click", () => {
-            overlay.remove();
+          .addEventListener("click", close);
+        const closeBtn = box.querySelector(".confirm-close");
+        if (closeBtn) closeBtn.addEventListener("click", close);
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) close();
+        });
+        document.addEventListener("keydown", escHandler);
+        document.body.classList.add("modal-open");
+        const printBtn = document.getElementById("btnPrintTicket");
+        if (printBtn) {
+          printBtn.focus();
+          printBtn.addEventListener("click", async () => {
+            // impresión directa vía agente local (Flask + brother_ql)
+            try {
+              // cargar html2canvas dinámicamente si no está presente
+              if (typeof html2canvas === "undefined") {
+                await new Promise((res, rej) => {
+                  const s = document.createElement("script");
+                  s.src =
+                    "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+                  s.onload = res;
+                  s.onerror = rej;
+                  document.head.appendChild(s);
+                });
+              }
+
+              const node = document.getElementById("ticket");
+              // reducir scale para generar una imagen más pequeña y rápida de enviar
+              const canvas = await html2canvas(node, {
+                scale: 1.5,
+                backgroundColor: "#FFFFFF",
+              });
+
+              // obtener blob en lugar de dataURL para evitar sobrecarga base64
+              const blob = await new Promise((resolve) =>
+                canvas.toBlob(resolve, "image/png", 0.9)
+              );
+
+              const form = new FormData();
+              form.append("file", blob, "ticket.png");
+
+              // iniciar la petición de impresión pero no bloquear demasiado la UX
+              const fetchPromise = fetch("http://127.0.0.1:5001/print", {
+                method: "POST",
+                body: form,
+              })
+                .then(async (r) => {
+                  try {
+                    return await r.json();
+                  } catch (e) {
+                    return { ok: r.ok };
+                  }
+                })
+                .catch((e) => ({ ok: false, msg: e.message }));
+
+              // esperar a que la petición termine, pero como máximo timeoutMs ms
+              const timeoutMs = 900;
+              const winner = await Promise.race([
+                fetchPromise,
+                new Promise((res) =>
+                  setTimeout(() => res({ timeout: true }), timeoutMs)
+                ),
+              ]);
+
+              if (!winner || winner.timeout) {
+                // no esperar más; redirigimos y dejamos que la petición continúe
+                // (mejora la percepción de velocidad)
+              } else if (!winner.ok) {
+                alert(
+                  "No se pudo imprimir: " +
+                    (winner.msg || JSON.stringify(winner))
+                );
+              }
+            } catch (err) {
+              console.error(err);
+              // ofrecer fallback a impresión por navegador si el agente local falla
+              const shouldFallback = confirm(
+                "Error al imprimir directamente: " +
+                  (err.message || err) +
+                  "\n\n¿Imprimir vía el diálogo del navegador como fallback?"
+              );
+              if (shouldFallback) {
+                try {
+                  window.print();
+                } catch (e) {
+                  alert(
+                    "No se pudo abrir el diálogo de impresión: " +
+                      (e.message || e)
+                  );
+                }
+              }
+            } finally {
+              // después de iniciar impresión (o timeout), volver a Auth
+              setTimeout(() => {
+                location.href = "auth.html";
+              }, 250);
+            }
           });
-        document
-          .getElementById("btnPrintTicket")
-          .addEventListener("click", () => {
-            // prefer to print only the ticket area; window.print will use @media print rules
-            window.print();
-          });
+        }
       }
 
       // build simple tabs object for checks (mark the matching tipo)
@@ -621,23 +828,29 @@
           data.tabs[key] ? "on" : ""
         }"></span><span class="lab">${label}</span></div>`;
         el.innerHTML = `
-        <!-- fila superior -->
+        <!-- fila superior: PED + TIPO -->
         <div class="t-row t-b">
           <div class="t-col t-code t-r">${data.ped}</div>
-          <div class="t-col t-type t-r">${data.tipo}</div>
-          <div class="t-col t-checks">
-            ${chk("DES", "DES")}
-            ${chk("ALM", "ALM")}
-            ${chk("ESP", "ESP")}
-            ${chk("TE", "TE")}
-            ${chk("CEN", "CEN")}
-            ${chk("TRAS", "TRAS")}
-          </div>
+          <div class="t-col t-type">${data.tipo}</div>
         </div>
-        <!-- contenido -->
+        <!-- contenido: items a la izquierda, checks a la derecha -->
         <div class="t-row t-b">
-          <div class="t-col t-items" style="flex:1">
-            <ul>${(data.items || []).map((x) => `<li>${x}</li>`).join("")}</ul>
+          <div class="t-col" style="flex:1; padding:0">
+            <div class="t-body">
+              <div class="t-items">
+                <ul>${(data.items || [])
+                  .map((x) => `<li>${x}</li>`)
+                  .join("")}</ul>
+              </div>
+              <div class="t-checks">
+                ${chk("DES", "DES")}
+                ${chk("ALM", "ALM")}
+                ${chk("ESP", "ESP")}
+                ${chk("TE", "TE")}
+                ${chk("CEN", "CEN")}
+                ${chk("TRAS", "TRAS")}
+              </div>
+            </div>
           </div>
         </div>
         <!-- auth -->

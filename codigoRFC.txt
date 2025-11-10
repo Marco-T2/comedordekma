@@ -5,3 +5,15 @@ if (Test-Path .\.venv\Scripts\Activate.ps1) { . .\.venv\Scripts\Activate.ps1 }
 
 # ejecutar agente (verás logs en la consola)
 python agent.py
+
+
+
+--------------------------
+IMPRESORA - POWER SHELL
+------------------------
+
+Set-Location -Path 'C:\Users\marco\Desktop\ComedorDekma\print_agent'
+# si necesitas elevar ejecución para activación de scripts:
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+python .\main.py

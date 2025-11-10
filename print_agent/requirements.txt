@@ -1,0 +1,5 @@
+flask
+pillow
+brother_ql
+pyusb
+pywin32
