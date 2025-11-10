@@ -1,10 +1,19 @@
 :root{
-  --bg: #0e0e0e;
-  --card: #1b1b1b;
-  --text: #eeeeee;
-  --muted: #bbbbbb;
-  --accent: #2f8bfd;
-  --pill: #2a2a2a;
+  /* User palette */
+  --COLOR-1: #FFFFFF;
+  --COLOR-2: #FFEFEB;
+  --COLOR-3: #FFACA1;
+  --COLOR-4: #FF988C;
+  --COLOR-5: #FF564F;
+  --COLOR-6: #C45044;
+
+  /* Mapped theme variables (use the palette) */
+  --bg: var(--COLOR-1);
+  --card: var(--COLOR-2);
+  --text: #111216; /* dark text on light bg */
+  --muted: #6b6b6b;
+  --accent: var(--COLOR-5);
+  --pill: var(--COLOR-4);
 }
 *{box-sizing:border-box}
 body{
@@ -35,7 +44,7 @@ body{
   background:var(--card);
   padding:20px;
   border-radius:12px;
-  box-shadow:0 10px 30px #0007;
+  box-shadow:0 8px 20px rgba(0,0,0,0.06);
   margin-bottom:16px;
 }
 .pill{
@@ -53,6 +62,7 @@ button{
   border-radius:10px;
   font:14px;
   cursor:pointer;
+  box-shadow: 0 6px 18px rgba(255,86,79,0.12);
 }
 /* utilities */
 .muted{color:var(--muted)}
