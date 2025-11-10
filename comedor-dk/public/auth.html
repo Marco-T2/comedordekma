@@ -3,29 +3,33 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light">
+  <style>
+    :root { color-scheme: light; }
+  </style>
   <title>Autenticación - Comedor</title>
   <link rel="stylesheet" href="assets/css/theme.css">
   <style>
     /* Light theme: fondo blanco, texto negro */
     :root{--bg:#ffffff;--text:#111111;--muted:#6b6b6b;--accent:var(--COLOR-2, #f7e6e3)}
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,Helvetica,sans-serif}
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,Helvetica,sans-serif;font-size:20px}
     .auth-wrap{min-height:100vh;display:flex;flex-direction:column}
     header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px}
     header .brand{display:flex;flex-direction:column;align-items:center}
-    header .brand h1{margin:6px 0;font-size:34px;letter-spacing:4px}
+  header .brand h1{margin:6px 0;font-size:48px;letter-spacing:4px}
     .content{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
     .grid{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;width:100%;max-width:1100px}
     .left{display:flex;flex-direction:column;align-items:center}
-    .reader-svg{width:240px;height:240px;opacity:1}
+  .reader-svg{width:280px;height:280px}
     .fields{width:100%;display:flex;gap:16px;justify-content:center;margin-bottom:18px}
     .field{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-    .field label{font-weight:700;color:var(--muted);font-size:14px}
-    .field input{padding:10px 12px;border-radius:8px;border:1px solid #e6e6e6;background:#fff;color:var(--text);width:320px}
+  .field label{font-weight:800;color:#444;font-size:16px}
+  .field input{padding:12px 14px;border-radius:8px;border:1px solid #e6e6e6;background:#fff;color:var(--text);width:360px;font-size:18px}
     .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:8px}
-    .key{background:#ffffff;border:1px solid #e6e6e6;border-radius:12px;padding:18px;font-size:20px;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,0.04)}
-    .key.action{background:var(--accent)}
+  .key{background:#ffffff;border:1px solid #e6e6e6;border-radius:12px;padding:22px;font-size:28px;color:#111;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,0.04)}
+  .key.action{background:var(--accent);color:#111;font-weight:700}
     .touch-btn{margin-top:22px;background:var(--accent);border-radius:50%;width:68px;height:68px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.06);cursor:pointer}
-    .date{color:var(--muted);font-weight:600}
+  .date{color:#555;font-weight:700;font-size:18px}
     /* overlay when card read */
     #cardOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);z-index:60;backdrop-filter:blur(4px);visibility:hidden;opacity:0;transition:opacity .25s ease,visibility .25s}
     #cardOverlay.show{visibility:visible;opacity:1}
@@ -42,14 +46,7 @@
         <div class="muted">AUTENTIFICACION</div>
       </div>
       <div class="brand">
-        <!-- simple inline logo placeholder; replace with assets/images/logo-dekma.png if available -->
-        <div style="display:flex;align-items:center;gap:10px">
-          <svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="50" cy="50" r="48" fill="var(--accent)" />
-            <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="26" fill="#111">D</text>
-          </svg>
-          <img src="assets/images/logo-dekma.png" alt="logo" style="height:40px;display:block" onerror="this.style.display='none'">
-        </div>
+        <img src="assets/images/logo-dekma.png" alt="DEKMA" style="height:64px;display:block;object-fit:contain" onerror="this.style.display='none'">
         <h1>COMEDOR</h1>
       </div>
       <div class="date" id="fecha"></div>
@@ -74,8 +71,8 @@
             <circle cx="100" cy="100" r="96" fill="#f7eceb" />
             <rect x="40" y="78" width="120" height="44" rx="6" fill="#ffffff" stroke="#eee"/>
             <rect x="54" y="86" width="28" height="28" rx="4" fill="#f0f0f0" />
-            <path d="M30 70c8-10 20-18 35-22" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-            <path d="M170 70c-8-10-20-18-35-22" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+            <path d="M30 70c8-10 20-18 35-22" stroke="#aaa" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+            <path d="M170 70c-8-10-20-18-35-22" stroke="#aaa" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
           </svg>
 
           <div style="margin-top:12px;">Pase la tarjeta sobre el lector</div>
@@ -93,9 +90,9 @@
           <div style="display:flex;justify-content:center">
             <div class="touch-btn" id="touchBtn" title="Touch / Confirm">
               <!-- touch icon (SVG) -->
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2v10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="12" cy="16" r="4" fill="#fff" opacity="0.12"/>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M12 2v10" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="12" cy="16" r="4" fill="#111" />
               </svg>
             </div>
           </div>
@@ -196,94 +193,3 @@
   </script>
 </body>
 </html>
-<!DOCTYPE html><meta charset="utf-8" />
-<title>Autenticación</title>
-<style>
-  body {
-    font: 22px/1.4 system-ui, Arial;
-    display: grid;
-    place-items: center;
-    height: 100dvh;
-    margin: 0;
-    background: #111;
-    color: #eee;
-  }
-  .card {
-    background: #1b1b1b;
-    padding: 32px 28px;
-    border-radius: 14px;
-    min-width: 420px;
-    text-align: center;
-    box-shadow: 0 10px 30px #0007;
-  }
-  .ok {
-    color: #7cfc00;
-  }
-  .err {
-    color: #ff6b6b;
-  }
-</style>
-<h1
-  style="
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    font: 14px monospace;
-    color: #888;
-  "
->
-  auth
-</h1>
-<div class="card">
-  <div id="estado">Pase su tarjeta…</div>
-  <div id="sub" style="font: 14px monospace; color: #888; margin-top: 8px">
-    Esperando evento RFID
-  </div>
-</div>
-
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-<script>
-  const estado = document.getElementById("estado");
-  const sub = document.getElementById("sub");
-  const socket = io(); // mismo host/puerto que sirvió esta página
-  let lastTs = 0;
-
-  socket.on("connect", () => (sub.textContent = "Conectado"));
-  socket.on("connect_error", (e) => (sub.textContent = "Error: " + e.message));
-
-  // Compatibilidad con el evento viejo (por si tu server aún emite rfid-scan)
-  socket.on("rfid-scan", (e) => handleEvent({ type: "rfid", ...e }));
-
-  // Nuevo evento unificado
-  socket.on("access-event", handleEvent);
-
-  function handleEvent(e) {
-    // anti-doble: evita repetir el mismo evento
-    if (e.ts && e.ts === lastTs) return;
-    lastTs = e.ts || Date.now();
-
-    const r = e.result || {};
-    const idTxt = e.code ?? e.cardId ?? ""; // RFID usa code, huella usa cardId
-    const origen = e.type === "finger" ? "huella" : "rfid";
-
-    if (r.ok) {
-      estado.innerHTML = `✅ <span class="ok">(${origen}) Hola ${r.nombre}</span><br><small>(${idTxt})</small>`;
-      // redirige al menú con datos por querystring
-      const q = new URLSearchParams({
-        nombre: r.nombre || "",
-        card: idTxt || "",
-        tipo: r.tipo || "",
-        origen,
-      });
-      setTimeout(() => (location.href = "/menu.html?" + q.toString()), 900);
-    } else {
-      estado.innerHTML = `❌ <span class="err">(${origen}) ${
-        r.msg || "No válido"
-      }</span>`;
-      setTimeout(
-        () => (estado.textContent = "Pase su tarjeta o huella…"),
-        1200
-      );
-    }
-  }
-</script>
