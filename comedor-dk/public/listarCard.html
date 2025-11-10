@@ -3,122 +3,138 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Listado de Tarjetas - Comedor</title>
+  <title>Menú - Comedor</title>
   <link rel="stylesheet" href="assets/css/theme.css">
-    <style>
-    body{font-family:Inter,system-ui,Arial,Helvetica,sans-serif;padding:24px;background:#fff;color:#111}
-    .wrap{max-width:1000px;margin:0 auto}
-    h1{font-size:28px;margin-bottom:8px}
-    .actions{display:flex;gap:12px;align-items:center;margin-bottom:12px}
-    :root{ --accent: var(--COLOR-2, #f7e6e3); }
-    /* Make action buttons visually similar to keypad keys and use accent */
-    button{
-      padding:12px 18px;
-      border-radius:14px;
-      border:1px solid #f0dede;
-      background:var(--accent);
-      color:#111;
-      cursor:pointer;
-      box-shadow:0 6px 14px rgba(0,0,0,0.04);
-      font-weight:800;
+  <style>
+    body{font-family:Inter,system-ui,Arial,Helvetica,sans-serif;padding:20px;background:#fff;color:#111}
+    .container{max-width:1100px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo img{height:36px}
+    .date{color:#666;font-weight:600}
+    h1{font-size:36px;text-align:center;margin:6px 0 18px}
+
+    /* Tabs */
+    .tabs{display:flex;gap:8px;margin-bottom:12px}
+    .tab{background:#fff;border:1px solid #f0d0cf;padding:8px 14px;border-radius:10px 10px 0 0;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+    .tab[aria-selected="true"]{background:var(--COLOR-2,#ff6b65);color:#fff;box-shadow:0 6px 14px rgba(0,0,0,0.06)}
+
+    .panel{border:1px solid #eee;padding:22px;border-radius:12px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,0.04);min-height:120px}
+    .menu-card{background:var(--COLOR-2,#fde9e8);padding:22px;border-radius:12px;color:#111;box-shadow:inset 0 2px 0 rgba(0,0,0,0.02)}
+    .menu-card h2{margin-top:0}
+    .menu-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:14px}
+    .btn{padding:10px 16px;border-radius:12px;border:none;font-weight:800;cursor:pointer}
+    .btn.primary{background:#ff6b65;color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #eee}
+
+    /* user info */
+    .user-row{display:flex;align-items:center;gap:12px;margin:22px 0}
+    .user-row img{height:34px}
+    .user-name{font-weight:700}
+
+    /* secondary menu */
+    .secondary{background:#fff5f4;padding:20px;border-radius:12px;box-shadow:0 12px 24px rgba(0,0,0,0.03)}
+
+    @media (max-width:700px){
+      .tabs{overflow:auto}
+      h1{font-size:28px}
     }
-    button:hover{
-      filter:brightness(0.96);
-    }
-    button:active{
-      transform:translateY(1px);
-      box-shadow:0 4px 10px rgba(0,0,0,0.06);
-    }
-    button:focus{
-      outline:2px solid #1113;
-      outline-offset:2px;
-    }
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    th,td{padding:10px 12px;border-bottom:1px solid #f0f0f0;text-align:left}
-    .muted{color:#666}
-  .small-btn{padding:10px 12px;border-radius:10px}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Tarjetas</h1>
-    <div class="actions">
-      <button id="btnNew">Registrar nuevo</button>
-      <input id="search" placeholder="Buscar nombre..." style="flex:1;padding:8px;border-radius:8px;border:1px solid #ddd" />
+  <div class="container">
+    <header>
+      <div class="logo">
+        <img src="assets/images/logo-dekma.png" alt="Dekma" onerror="this.style.display='none'" />
+        <div style="font-weight:700">Juan Pérez <span style="color:#666;font-weight:600">(0003322164)</span></div>
+      </div>
+      <div class="date">9/11/2025</div>
+    </header>
+
+    <h1>MENU</h1>
+
+    <nav class="tabs" role="tablist" aria-label="Menú tipos">
+      <button class="tab" role="tab" aria-selected="true" data-tab="desayuno">Desayuno</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="almuerzo">Almuerzo</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="especial">Especial</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="te">Te</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="trasnochado">Trasnochado</button>
+    </nav>
+
+    <section class="panel" id="panel-main">
+      <div class="menu-card" id="menu-main">
+        <h2 id="menu-title">Menú de Desayuno</h2>
+        <ul id="menu-items">
+          <li>Api de quinua</li>
+          <li>Tostadas con queso</li>
+          <li>Té con hierbas</li>
+        </ul>
+      </div>
+
+      <div class="menu-actions">
+        <button class="btn primary" id="btnAccept">ACEPTAR</button>
+        <button class="btn ghost" id="btnCancel">CANCELAR</button>
+      </div>
+    </section>
+
+    <div class="user-row">
+      <img src="assets/images/logo-dekma.png" alt="Dekma" onerror="this.style.display='none'"/>
+      <div style="flex:1">
+        <div class="user-name">Juan Pérez <span style="color:#777;font-weight:600">(0003322164)</span></div>
+      </div>
+      <div>
+        <span style="background:#ffeaea;padding:6px 10px;border-radius:12px;color:#ff6b65;font-weight:700">normal</span>
+        <button class="btn" style="background:#ff6b65;color:#fff;margin-left:8px;border-radius:12px">Volver</button>
+      </div>
     </div>
 
-    <table id="tbl">
-      <thead>
-  <tr><th>#</th><th>Nombre</th><th>Tipo</th><th>Código (5d)</th><th>Código tarjeta</th><th>Acciones</th></tr>
-      </thead>
-      <tbody>
-        <!-- rows -->
-      </tbody>
-    </table>
+    <section class="secondary">
+      <h3>Menú del día</h3>
+      <ul>
+        <li>Sopa de maní</li>
+        <li>Segundo: Pique macho</li>
+        <li>Bebida: Refresco de linaza</li>
+      </ul>
+    </section>
   </div>
 
   <script>
-    document.getElementById('btnNew').addEventListener('click', ()=> location.href = 'registrarCard.html');
-    const tbody = document.querySelector('#tbl tbody');
-    const search = document.getElementById('search');
+    // Simple tab switching with mock menus
+    const menus = {
+      desayuno: { title: 'Menú de Desayuno', items: ['Api de quinua','Tostadas con queso','Té con hierbas'] },
+      almuerzo: { title: 'Menú de Almuerzo', items: ['Sopa de maní','Segundo: Pique macho','Bebida: Refresco de linaza'] },
+      especial: { title: 'Menú Especial', items: ['Ensalada templada','Wrap de pollo','Jugo natural'] },
+      te: { title: 'Menú de Té', items: ['Scones','Mermelada','Té negro'] },
+      trasnochado: { title: 'Menú Trasnochado', items: ['Caldo reconfortante','Tostadas','Café'] }
+    };
 
-    async function load(){
-  tbody.innerHTML = '<tr><td colspan="6" class="muted">Cargando...</td></tr>';
-      try{
-        const res = await fetch('/api/cards');
-        if(!res.ok) throw new Error('Error cargando');
-        const data = await res.json();
-        renderRows(data);
-      }catch(err){
-        tbody.innerHTML = '<tr><td colspan="5" class="muted">Error al cargar</td></tr>';
-      }
+    function setMenu(key){
+      const m = menus[key] || menus.desayuno;
+      document.getElementById('menu-title').textContent = m.title;
+      const ul = document.getElementById('menu-items');
+      ul.innerHTML = '';
+      m.items.forEach(it=>{ const li=document.createElement('li'); li.textContent=it; ul.appendChild(li); });
     }
 
-    function renderRows(items){
-      const q = (search.value||'').toLowerCase();
-      const filtered = items.filter(it=>!q || (it.nombre||'').toLowerCase().includes(q));
-      if(filtered.length===0){
-        tbody.innerHTML = '<tr><td colspan="6" class="muted">No hay registros</td></tr>';
-        return;
-      }
-      tbody.innerHTML = '';
-        filtered.forEach((it,idx)=>{
-        const tr = document.createElement('tr');
-        // mask helper: show first 3 then two asterisks if longer
-        const mask = (c)=>{ if(!c) return ''; c = String(c); return c.length>3? (c.slice(0,3)+'**'): c };
-        tr.innerHTML = `<td>${idx+1}</td>
-                        <td>${escapeHtml(it.nombre||'')}</td>
-                        <td>${escapeHtml(it.tipo||'')}</td>
-                        <td>${escapeHtml(mask(it.code||''))}</td>
-                        <td>${escapeHtml(mask(it.code_rfc||''))}</td>
-                        <td>
-                          <button data-id="${it.id}" class="edit small-btn">Editar</button>
-                          <button data-id="${it.id}" class="del small-btn">Eliminar</button>
-                        </td>`;
-        tbody.appendChild(tr);
+    document.querySelectorAll('.tab').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+        b.setAttribute('aria-selected','true');
+        setMenu(b.getAttribute('data-tab'));
       });
+    });
 
-      document.querySelectorAll('.edit').forEach(b=>b.addEventListener('click', e=>{
-        const id = e.currentTarget.getAttribute('data-id');
-        location.href = `registrarCard.html?id=${id}`;
-      }));
+    document.getElementById('btnAccept').addEventListener('click', ()=>{
+      // placeholder: call backend or show confirmation
+      alert('Se ha registrado la aceptación del menú.');
+    });
+    document.getElementById('btnCancel').addEventListener('click', ()=>{
+      // return to auth or previous page
+      location.href = 'auth.html';
+    });
 
-      document.querySelectorAll('.del').forEach(b=>b.addEventListener('click', async e=>{
-        const id = e.currentTarget.getAttribute('data-id');
-        if(!confirm('Eliminar registro?')) return;
-        try{
-          const res = await fetch(`/api/cards/${id}`, { method: 'DELETE' });
-          if(!res.ok) throw new Error('delete failed');
-          load();
-        }catch(err){ alert('No se pudo eliminar') }
-      }));
-    }
-
-    search.addEventListener('input', ()=> load());
-
-    function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]) }
-
-    load();
+    // init
+    setMenu('desayuno');
   </script>
 </body>
 </html>

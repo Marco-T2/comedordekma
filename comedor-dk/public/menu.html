@@ -1,3 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Menu - Comedor</title>
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <style>
+    :root{ --accent: var(--COLOR-2, #f7e6e3); }
+    body{font-family:Inter,system-ui,Arial,Helvetica,sans-serif;padding:18px;background:var(--bg,#fff);color:var(--text,#111);}
+    .container{max-width:1100px;margin:0 auto}
+    .header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 16px; }
+    .tab{ padding:10px 14px; border:1px solid #e6e6e6; border-bottom:none; border-radius:10px 10px 0 0; background:#fff; cursor:pointer; font-weight:700; }
+    .tab[aria-selected="true"]{ background:var(--accent); }
+    .panel{ border:1px solid #e6e6e6; border-radius:12px; padding:18px; background:#fff; box-shadow:0 8px 20px rgba(0,0,0,.04); }
+    .panel .card{ background:var(--accent); border-radius:14px; padding:18px; margin:8px 0 16px; }
+    .panel h2{margin:0 0 8px}
+    .panel ul{margin:0 0 8px 18px}
+    .panel .actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
+    .btn{ padding:12px 18px; border-radius:12px; border:1px solid #f0dede; background:var(--accent); color:#111; font-weight:800; cursor:pointer; }
+    .btn.secondary{ background:#fff; }
+    .no-menus{padding:18px;border:1px dashed #e6e6e6;border-radius:12px;background:#fff;color:#666}
+    @media(max-width:720px){ .tabs{gap:6px} .tab{padding:8px 10px;font-size:14px} .btn{padding:10px 12px} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+        <div style="display:flex;align-items:center;gap:12px">
+          <strong>MENU</strong>
+          <div id="usuario" class="user" style="margin-left:12px;font-weight:600;color:#333"></div>
+        </div>
+        <div id="fecha">&nbsp;</div>
+      </div>
+
+    <div id="menuRoot">
+      <div class="tabs" id="tabs" role="tablist" aria-label="Menú del día"></div>
+      <div class="panel" id="panel" role="tabpanel" tabindex="0"></div>
+    </div>
+  </div>
+
+  <script>
+  // Mock data fallback (tabs requested by user)
+  const mockTabs = [
+    {id:1, tipo_menu:"Desayuno", estado:1},
+    {id:2, tipo_menu:"Almuerzo", estado:1},
+    {id:3, tipo_menu:"Almuerzo-Especial", estado:1},
+    {id:4, tipo_menu:"Te", estado:1},
+    {id:5, tipo_menu:"Cena", estado:1},
+    {id:6, tipo_menu:"Trasnoche", estado:1}
+  ];
+  const mockItems = {
+    "Desayuno": ["Api de quinua","Tostadas con queso","Té con hierbas"],
+    "Almuerzo": ["Sopa de maní","Pique macho","Refresco de linaza"],
+    "Almuerzo-Especial": ["Ensalada templada","Segunda opción: pollo","Jugo natural"],
+    "Te": ["Bizcocho","Mermelada","Té negro"],
+    "Cena": ["Caldito de pollo","Arroz con queso","Mate de manzanilla"],
+    "Trasnoche": ["Bebida caliente","Tostadas","Sopa ligera"]
+  };
+
+  async function getTabs(){
+    try{
+      const r = await fetch('/api/menu/tabs'); if(r.ok) return r.json();
+    }catch(e){}
+    return mockTabs;
+  }
+
+  async function getItems(tipo){
+    try{
+      const r = await fetch('/api/menu/items?tipo='+encodeURIComponent(tipo)); if(r.ok) return r.json();
+    }catch(e){}
+    return mockItems[tipo] || [];
+  }
+
+  document.getElementById('fecha').textContent = new Date().toLocaleDateString();
+
+  // populate user from querystring (optional)
+  (function populateUser(){
+    try{
+      const qp = new URLSearchParams(location.search);
+    const nombre = qp.get("nombre") || "Comensal";
+    const card = qp.get("card") || "0003322164";
+      const tipo = qp.get("tipo") || "";
+      const u = document.getElementById("usuario");
+      if(u) u.textContent = `👤 ${nombre}${card?` (${card})`:''}${tipo?` – ${tipo}`:''}`;
+    }catch(e){ /* ignore */ }
+  })();
+
+  (async function init(){
+    const raw = await getTabs();
+    const tabsData = (raw||[]).filter(t=>Number(t.estado)===1).sort((a,b)=>a.id-b.id);
+    const tabsEl = document.getElementById('tabs');
+    const panelEl = document.getElementById('panel');
+    if(!tabsData || tabsData.length===0){
+      tabsEl.innerHTML=''; panelEl.innerHTML = '<div class="no-menus">No hay menús habilitados hoy.</div>'; return;
+    }
+    let current = tabsData[0];
+
+    function renderTabs(){
+      tabsEl.innerHTML = '';
+      tabsData.forEach(t=>{
+        const b = document.createElement('button');
+        b.className = 'tab';
+        b.setAttribute('role','tab');
+        b.setAttribute('aria-selected', String(t.id===current.id));
+        b.textContent = t.tipo_menu;
+        b.onclick = async ()=>{ current = t; await renderPanel(); renderTabs(); };
+        tabsEl.appendChild(b);
+      });
+    }
+
+    async function renderPanel(){
+      const items = await getItems(current.tipo_menu);
+      panelEl.innerHTML = `
+        <div class="card">
+          <h2>Menú de ${current.tipo_menu}</h2>
+          <ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul>
+        </div>
+        <div class="actions">
+          <button class="btn" id="btnAceptar">ACEPTAR</button>
+          <button class="btn secondary" id="btnCancelar">CANCELAR</button>
+        </div>`;
+      document.getElementById('btnAceptar').addEventListener('click', ()=>{
+        // placeholder: en el futuro enviar al backend
+        alert('Seleccionado: '+current.tipo_menu);
+      });
+      document.getElementById('btnCancelar').addEventListener('click', ()=>{
+        // volver atrás (si aplica)
+        if(history.length>1) history.back();
+      });
+    }
+
+    renderTabs();
+    await renderPanel();
+  })();
+  
+  </script>
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="es">
 <head>
